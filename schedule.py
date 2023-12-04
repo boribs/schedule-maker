@@ -15,6 +15,22 @@ class CourseSchedule:
 
         return tuple(map(int, time.split('-')))
 
+    def time_collision(self, other):
+        """
+        Returns True only if this object's time collides with `schedule`'s time.
+        """
+
+        assert type(other) == type(self)
+
+        if (self.time[0] < other.time[0] < self.time[1] or
+            other.time[0] < self.time[0] < other.time[1] or
+            (self.time[0] > other.time[0] and self.time[1] < other.time[1]) or
+            (other.time[0] > self.time[0] and other.time[1] < self.time[1])
+        ):
+            return True
+
+        return False
+
     def __repr__(self):
         return f'{self.time[0]}-{self.time[1]} :: {self.room}'
 

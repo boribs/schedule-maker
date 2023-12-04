@@ -4,8 +4,41 @@ import schedule
 def fast_course():
     return schedule.Course('12345', '000', 'Some course', '000', 'Some professor')
 
-class CourseScheduleAddDayTester(unittest.TestCase):
+class RangeCollisionTester(unittest.TestCase):
+    """
+    There are four scenarios. Given ranges A and B:
+        1. A's end collides with B's beginning.
+        2. A is entirely inside B.
 
+    And their counterparts:
+        3. B's end collides with A's beginning.
+        4. B is entirely inside A.
+
+    This test case is testing that the collision detector function works as intended.
+    """
+
+    def test_collision_scenario_1(self):
+        a = schedule.CourseSchedule('0700-0859', 'room')
+        b = schedule.CourseSchedule('0800-0959', 'room')
+
+        self.assertTrue(a.time_collision(b))
+        self.assertTrue(b.time_collision(a))
+
+    def test_collision_scenario_2(self):
+        a = schedule.CourseSchedule('0800-0859', 'room')
+        b = schedule.CourseSchedule('0700-0959', 'room')
+
+        self.assertTrue(a.time_collision(b))
+        self.assertTrue(b.time_collision(a))
+
+    def test_no_collision_with_same_limit(self):
+        a = schedule.CourseSchedule('0800-0900', 'room')
+        b = schedule.CourseSchedule('0900-1000', 'room')
+
+        self.assertFalse(a.time_collision(b))
+        self.assertFalse(b.time_collision(a))
+
+class CourseScheduleAddDayTester(unittest.TestCase):
     def test_add_day_on_empty(self):
         for d in 'LAMJVS':
             t, r = ('0700-0759', 'room')
