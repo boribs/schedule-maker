@@ -9,10 +9,11 @@ class CourseScheduleAddDayTester(unittest.TestCase):
     def test_add_day_on_empty(self):
         for d in 'LAMJVS':
             t, r = ('0700-0759', 'room')
-            c = fast_course().add_day(d, t, r)
+            c = fast_course()
+            c.add_day(d, t, r)
 
             self.assertEqual(len(c.schedule), 1)
-            self.assertEqual(c.schedule[d], schedule.ScheduleDay(t, r))
+            self.assertEqual(c.schedule[d], schedule.CourseSchedule(t, r))
 
     def test_add_day_fails_on_other_day(self):
         pass

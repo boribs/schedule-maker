@@ -1,6 +1,11 @@
 import xlrd # pip install xlrd==1.2.0
 
-class ScheduleDay:
+class CourseSchedule:
+    """
+    This class stores individual course's class time and classroom.
+    It's basically a named tuple, but with time format conversion.
+    """
+
     def __init__(self, time, room):
         self.time = self.parse_time(time)
         self.room = room
