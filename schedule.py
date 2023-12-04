@@ -57,6 +57,8 @@ class Course:
         self.schedule = {}
 
     def add_day(self, day: str, time: str, room: str) -> bool:
+        assert day in 'LAMJVS'
+
         cs = CourseSchedule(time, room) # schedule we're trying to add
 
         # empty day, no problem

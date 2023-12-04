@@ -54,9 +54,6 @@ class CourseScheduleAddDayTester(unittest.TestCase):
             self.assertEqual(len(c.schedule[d]), 1)
             self.assertEqual(c.schedule[d], [schedule.CourseSchedule(t, r)])
 
-    def test_add_day_fails_on_other_day(self):
-        pass
-
     def test_add_day_on_non_conflicting_schedule_same_day(self):
         c = fast_course()
 
