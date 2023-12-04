@@ -1,5 +1,7 @@
 import xlrd # pip install xlrd==1.2.0
 
+# TOOD: function type annotations
+
 class CourseSchedule:
     """
     This class stores individual course's class time and classroom.
@@ -13,7 +15,11 @@ class CourseSchedule:
     def parse_time(self, time):
         assert len(time) == 9 and type(time) == str and time[4] == '-'
 
-        return tuple(map(int, time.split('-')))
+        val = tuple(map(int, time.split('-')))
+
+        assert val[0] < val[1]
+
+        return val
 
     def time_collision(self, other):
         """
