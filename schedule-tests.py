@@ -43,10 +43,12 @@ class CourseScheduleAddDayTester(unittest.TestCase):
         for d in 'LAMJVS':
             t, r = ('0700-0759', 'room')
             c = fast_course()
-            c.add_day(d, t, r)
+
+            self.assertTrue(c.add_day(d, t, r))
 
             self.assertEqual(len(c.schedule), 1)
-            self.assertEqual(c.schedule[d], schedule.CourseSchedule(t, r))
+            self.assertEqual(len(c.schedule[d]), 1)
+            self.assertEqual(c.schedule[d], [schedule.CourseSchedule(t, r)])
 
     def test_add_day_fails_on_other_day(self):
         pass
