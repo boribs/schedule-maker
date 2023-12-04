@@ -39,6 +39,10 @@ class RangeCollisionTester(unittest.TestCase):
         self.assertFalse(b.time_collision(a))
 
 class CourseScheduleAddDayTester(unittest.TestCase):
+    """
+    Tests for the Courses.add_day method.
+    """
+
     def test_add_day_on_empty(self):
         for d in 'LAMJVS':
             t, r = ('0700-0759', 'room')
@@ -53,29 +57,112 @@ class CourseScheduleAddDayTester(unittest.TestCase):
     def test_add_day_fails_on_other_day(self):
         pass
 
-    def test_add_day_on_non_conflicting_schedule_1(self):
-        pass
+    def test_add_day_on_non_conflicting_schedule_same_day(self):
+        c = fast_course()
 
-    def test_add_day_on_non_conflicting_schedule_2(self):
-        pass
+        self.assertTrue(c.add_day('L', '0700-0759', 'room'))
+        self.assertTrue(c.add_day('L', '0800-0859', 'room'))
 
-    def test_add_day_on_non_conflicting_schedule_3(self):
-        pass
+        self.assertEqual(len(c.schedule), 1)
+        self.assertEqual(len(c.schedule['L']), 2)
+        self.assertEqual(
+            c.schedule['L'],
+            [
+                schedule.CourseSchedule('0700-0759', 'room'),
+                schedule.CourseSchedule('0800-0859', 'room'),
+            ],
+        )
 
-    def test_add_day_on_non_conflicting_schedule_4(self):
-        pass
+    def test_add_day_on_non_conflicting_schedule_same_day(self):
+        c = fast_course()
+
+        self.assertTrue(c.add_day('L', '0700-0759', 'room'))
+        self.assertTrue(c.add_day('L', '1000-1159', 'room'))
+
+        self.assertEqual(len(c.schedule), 1)
+        self.assertEqual(len(c.schedule['L']), 2)
+        self.assertEqual(
+            c.schedule['L'],
+            [
+                schedule.CourseSchedule('0700-0759', 'room'),
+                schedule.CourseSchedule('1000-1159', 'room'),
+            ],
+        )
+
+    def test_add_day_on_non_conflicting_schedule_different_day_different_schedule(self):
+        c = fast_course()
+
+        self.assertTrue(c.add_day('L', '0700-0759', 'room'))
+        self.assertTrue(c.add_day('M', '1000-1159', 'room'))
+
+        self.assertEqual(len(c.schedule), 2)
+        self.assertEqual(len(c.schedule['L']), 1)
+        self.assertEqual(len(c.schedule['M']), 1)
+        self.assertEqual(
+            c.schedule['L'],
+            [schedule.CourseSchedule('0700-0759', 'room')]
+        )
+        self.assertEqual(
+            c.schedule['M'],
+            [schedule.CourseSchedule('1000-1159', 'room')]
+        )
+
+    def test_add_day_on_non_conflicting_schedule_different_day_same_schedule(self):
+        c = fast_course()
+
+        self.assertTrue(c.add_day('L', '0700-0759', 'room'))
+        self.assertTrue(c.add_day('M', '0700-0759', 'room'))
+
+        self.assertEqual(len(c.schedule), 2)
+        self.assertEqual(len(c.schedule['L']), 1)
+        self.assertEqual(len(c.schedule['M']), 1)
+        self.assertEqual(
+            c.schedule['L'],
+            [schedule.CourseSchedule('0700-0759', 'room')]
+        )
+        self.assertEqual(
+            c.schedule['M'],
+            [schedule.CourseSchedule('0700-0759', 'room')]
+        )
 
     def test_add_day_fails_on_conflicting_schedule_1(self):
-        pass
+        c = fast_course()
+
+        self.assertTrue(c.add_day('L', '0700-0759', 'room'))
+        self.assertFalse(c.add_day('L', '0730-0830', 'room'))
+
+        self.assertEqual(len(c.schedule), 1)
+        self.assertEqual(len(c.schedule['L']), 1)
+        self.assertEqual(
+            c.schedule['L'],
+            [schedule.CourseSchedule('0700-0759', 'room')]
+        )
 
     def test_add_day_fails_on_conflicting_schedule_2(self):
-        pass
+        c = fast_course()
+
+        self.assertTrue(c.add_day('L', '0700-0959', 'room'))
+        self.assertFalse(c.add_day('L', '0800-0859', 'room'))
+
+        self.assertEqual(len(c.schedule), 1)
+        self.assertEqual(len(c.schedule['L']), 1)
+        self.assertEqual(
+            c.schedule['L'],
+            [schedule.CourseSchedule('0700-0959', 'room')]
+        )
 
     def test_add_day_fails_on_conflicting_schedule_3(self):
-        pass
+        c = fast_course()
 
-    def test_add_day_fails_on_conflicting_schedule_4(self):
-        pass
+        self.assertTrue(c.add_day('L', '0800-0859', 'room'))
+        self.assertFalse(c.add_day('L', '0730-0930', 'room'))
+
+        self.assertEqual(len(c.schedule), 1)
+        self.assertEqual(len(c.schedule['L']), 1)
+        self.assertEqual(
+            c.schedule['L'],
+            [schedule.CourseSchedule('0800-0859', 'room')]
+        )
 
 if __name__ == '__main__':
     unittest.main()

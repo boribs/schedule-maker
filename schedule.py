@@ -41,6 +41,10 @@ class CourseSchedule:
             return self.time == other.time and self.room == other.room
 
 class Course:
+    """
+    A Course's data.
+    """
+
     def __init__(self, nrc, key, name, sec, prof):
         self.nrc = nrc
         self.name = name
@@ -50,7 +54,22 @@ class Course:
         self.schedule = {}
 
     def add_day(self, day, time, room):
-        self.schedule[day] = ScheduleDay(time, room)
+        cs = CourseSchedule(time, room) # schedule we're trying to add
+
+        # empty day, no problem
+        if self.schedule.get(day, None) is None:
+            self.schedule[day] = [cs]
+            return True
+
+        # check if classes collide
+        for c_sch in self.schedule[day]:
+            if c_sch.time_collision(cs):
+                return False
+
+        # no collisions, add schedule
+        self.schedule[day].append(cs)
+
+        return True
 
     def __repr__(self):
         s = f'{self.nrc}, {self.name}, {self.professor}\n'
