@@ -13,6 +13,12 @@ class ScheduleDay:
     def __repr__(self):
         return f'{self.time[0]}-{self.time[1]} :: {self.room}'
 
+    def __eq__(self, other):
+        if type(self) != type(other):
+            return False
+        else:
+            return self.time == other.time and self.room == other.room
+
 class Course:
     def __init__(self, nrc, key, name, sec, prof):
         self.nrc = nrc
