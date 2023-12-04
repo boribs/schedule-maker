@@ -1,6 +1,5 @@
+from __future__ import annotations
 import xlrd # pip install xlrd==1.2.0
-
-# TOOD: function type annotations
 
 class CourseSchedule:
     """
@@ -8,20 +7,18 @@ class CourseSchedule:
     It's basically a named tuple, but with time format conversion.
     """
 
-    def __init__(self, time, room):
+    def __init__(self, time: str, room: str):
         self.time = self.parse_time(time)
         self.room = room
 
-    def parse_time(self, time):
+    def parse_time(self, time: str) -> tuple[int, int]:
         assert len(time) == 9 and type(time) == str and time[4] == '-'
-
         val = tuple(map(int, time.split('-')))
-
         assert val[0] < val[1]
 
         return val
 
-    def time_collision(self, other):
+    def time_collision(self, other: CourseSchedule) -> bool:
         """
         Returns True only if this object's time collides with `schedule`'s time.
         """
@@ -59,7 +56,7 @@ class Course:
         self.section = sec
         self.schedule = {}
 
-    def add_day(self, day, time, room):
+    def add_day(self, day: str, time: str, room: str) -> bool:
         cs = CourseSchedule(time, room) # schedule we're trying to add
 
         # empty day, no problem
@@ -88,7 +85,7 @@ class SchedulePrototype:
 courses_by_nrc = {}
 courses_by_name = {}
 
-def parse_file(filename):
+def parse_file(filename: str):
     d = xlrd.open_workbook(filename)
     sheet = d.sheet_by_index(0)
 
