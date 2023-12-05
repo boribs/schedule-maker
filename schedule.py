@@ -114,19 +114,30 @@ def parse_file(filename: str) -> dict[int, Course]:
 
     return courses_by_nrc
 
-# TODO: Add filters!
 def collect_courses(
         courses_by_nrc: dict[int, Course],
         names: list[str],
         prof_blacklist: list[str] = [],
+        time_restrictions: dict[str, list[str]] = {},
 ) -> dict[str, Course]:
     courses = {name : [] for name in names}
+    time_restrictions = {
+        key : [CourseSchedule(s, '...') for s in time_restrictions[key]]
+        for key in time_restrictions.keys()
+    }
 
     for nrc in courses_by_nrc.keys():
         course = courses_by_nrc[nrc]
         not_blacklist = course.professor not in prof_blacklist
 
-        if course.name in names and not_blacklist:
+        time_available = True
+        for day in course.schedule.keys():
+            if time_restrictions.get(day, None):
+                if not course.time_available(day, time_restrictions[day]):
+                    time_available = False
+                    break
+
+        if course.name in names and not_blacklist and time_available:
             courses[course.name].append(course)
 
     return courses
@@ -188,7 +199,15 @@ if __name__ == '__main__':
             'SANCHEZ - GALVEZ MARIA EUGENIA',
             'CERON - GARNICA CARMEN',
             'ZACARIAS - FLORES FERNANDO',
-        ]
+        ],
+        time_restrictions={
+            'L' : ['0700-0859', '1300-1459'],
+            'A' : ['0700-0859', '1300-1459'],
+            'M' : ['0700-0859', '1300-1459'],
+            'J' : ['0700-0859', '1300-1459'],
+            'V' : ['0700-0859', '1300-1459'],
+            'S' : ['0700-0859', '1300-1459'],
+        }
     )
 
     c = list(courses_by_name.values())
