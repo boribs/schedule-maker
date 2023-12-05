@@ -80,15 +80,8 @@ class Course:
         s = f'{self.nrc}, {self.name}, {self.professor}\n'
         return s + '\n'.join(f'{key}: {self.schedule[key]}' for key in self.schedule.keys())
 
-class SchedulePrototype:
-    def __init__(self):
-        pass
-
-courses_by_nrc = {}
-courses_by_name = {}
-
-def parse_file(filename: str):
-    global courses_by_nrc, courses_by_name
+def parse_file(filename: str) -> dict[int, Course]:
+    courses_by_nrc = {}
 
     d = xlrd.open_workbook(filename)
     sheet = d.sheet_by_index(0)
@@ -102,31 +95,8 @@ def parse_file(filename: str):
 
         courses_by_nrc[nrc].add_day(day, time, room)
 
-        # associate nrcs of courses with name, to compare classes
-        if courses_by_name.get(name, None) is None:
-            courses_by_name[name] = []
+    return courses_by_nrc
 
-        courses_by_name[name].append(courses_by_nrc[nrc])
-
-class Node:
-    def __init__(self, nrc):
-        self.nrc = nrc
-        self.children = []
-
-    def __repr__(self):
-        return f'{self.nrc}'
-
-datos = [
-    ['1', '2'],
-    ['a', 'b'],
-    ['F', 'G'],
-]
-combinaciones = []
-
-
-def combina_r(nodo, posibilidades, prog):
-    if len(posibilidades) == 0:
-        print(prog)
         return
 
     next_pos = posibilidades[1:]
