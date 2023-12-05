@@ -1,6 +1,7 @@
 from __future__ import annotations
 import xlrd # pip install xlrd==1.2.0
 import copy
+import tabulate
 
 VALID_DAYS = 'LAMJVS'
 
@@ -177,6 +178,26 @@ class SchedulePrototype:
             self.schedule[day].sort(key=lambda n: n.time_key())
 
         return self
+
+    def table(self):
+        keys = self.schedule.keys()
+        headers = ['Horario'] + [day for day in VALID_DAYS if day in keys]
+        ranges = [CourseSchedule(f'{i:>02}00-{i:>02}59', None, None) for i in range(7, 21)]
+
+        rows = []
+        for r in ranges:
+            row = [r]
+            for day in self.schedule.keys():
+                for t in self.schedule[day]:
+                    if r.time_collision(t):
+                        row.append(t)
+                        break
+                else:
+                    row.append(None)
+
+            rows.append(row)
+
+        return tabulate.tabulate(rows, headers=headers)
 
 def combine_r(prot, possibilities, combinations):
     if len(possibilities) == 0:
