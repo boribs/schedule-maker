@@ -2,6 +2,8 @@ from __future__ import annotations
 import xlrd # pip install xlrd==1.2.0
 import copy
 
+VALID_DAYS = 'LAMJVS'
+
 class CourseSchedule:
     """
     This class stores individual course's class time and classroom.
@@ -59,7 +61,7 @@ class Course:
         self.schedule = {}
 
     def add_day(self, day: str, time: str, room: str) -> bool:
-        assert day in 'LAMJVS'
+        assert day in VALID_DAYS
 
         cs = CourseSchedule(time, room) # schedule we're trying to add
 
