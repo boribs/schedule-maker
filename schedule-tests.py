@@ -45,6 +45,13 @@ class RangeCollisionTester(unittest.TestCase):
         self.assertTrue(a.time_collision(b))
         self.assertTrue(b.time_collision(a))
 
+    def test_collision_that_didnt_work_for_some_reason(self):
+        a = schedule.CourseSchedule('1100-1350', 'room')
+        b = schedule.CourseSchedule('0700-1129', 'room')
+
+        self.assertTrue(a.time_collision(b))
+        self.assertTrue(b.time_collision(a))
+
 class CourseScheduleAddDayTester(unittest.TestCase):
     """
     Tests for the Courses.add_day method.
@@ -167,6 +174,55 @@ class CourseScheduleAddDayTester(unittest.TestCase):
             c.schedule['L'],
             [schedule.CourseSchedule('0800-0859', 'room')]
         )
+
+class CourseTimeAvaliabilityTester(unittest.TestCase):
+    def test_time_avaliable_on_empty_schedule(self):
+        c = fast_course()
+        t = schedule.CourseSchedule('0700-0759', '...')
+
+        for day in schedule.VALID_DAYS:
+            self.assertTrue(c.time_avaliable(day, [t]))
+
+    def test_time_avaliale_on_avaliable_time_1(self):
+        c = fast_course()
+        c.add_day('L', '0700-0759', '...')
+
+        t = schedule.CourseSchedule('0800-0859', '...')
+        self.assertTrue(c.time_avaliable('L', [t]))
+
+    def test_time_avaliale_on_avaliable_time_2(self):
+        c = fast_course()
+        c.add_day('L', '1100-1359', '...')
+
+        t = schedule.CourseSchedule('0700-1129', '...')
+        self.assertFalse(c.time_avaliable('L', [t]))
+
+    def test_time_not_avaliable(self):
+        c = fast_course()
+        c.add_day('L', '0700-0759', '...')
+
+        t = schedule.CourseSchedule('0730-0829', '...')
+        self.assertFalse(c.time_avaliable('L', [t]))
+
+    def test_time_avaliable_with_longer_list(self):
+        c = fast_course()
+        c.add_day('M', '1100-1359', '...')
+
+        t = [
+            schedule.CourseSchedule('0730-0829', '...'),
+            schedule.CourseSchedule('1430-1529', '...'),
+        ]
+        self.assertTrue(c.time_avaliable('M', t))
+
+    def test_time_not_avaliable_with_longer_list(self):
+        c = fast_course()
+        c.add_day('M', '1100-1359', '...')
+
+        t = [
+            schedule.CourseSchedule('0730-1129', '...'),
+            schedule.CourseSchedule('1430-1529', '...'),
+        ]
+        self.assertFalse(c.time_avaliable('M', t))
 
 if __name__ == '__main__':
     unittest.main()
