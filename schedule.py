@@ -216,6 +216,15 @@ class SchedulePrototype:
 
         return tabulate.tabulate(rows, headers=headers)
 
+    def show(self, course_by_nrc: dict[int, Course]):
+        data = []
+        for nrc in self.nrcs:
+            course = courses_by_nrc[nrc]
+            data.append([nrc, f'[{course.initials()}]', f'{course.name}', course.professor])
+
+        print(tabulate.tabulate(data, tablefmt='plain') + '\n')
+        print(self.table(course_by_nrc))
+
 def combine_r(prot, possibilities, combinations):
     if len(possibilities) == 0:
         combinations.append(prot)
