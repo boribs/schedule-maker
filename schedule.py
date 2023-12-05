@@ -111,6 +111,9 @@ class Course:
 
         return True
 
+    def initials(self):
+        return ''.join(map(lambda s: s[0], self.name.split()))
+
     def __repr__(self):
         s = f'{self.nrc}, {self.name}, {self.professor}\n'
         return s + '\n'.join(f'{key}: {self.schedule[key]}' for key in self.schedule.keys())
@@ -193,7 +196,7 @@ class SchedulePrototype:
 
         return self
 
-    def table(self):
+    def table(self, courses_by_nrc: dict[int, Course]):
         keys = self.schedule.keys()
         headers = ['Horario'] + [DAY_DICT[day] for day in VALID_DAYS if day in keys]
         ranges = [CourseSchedule(f'{i:>02}00-{i:>02}59', None, None) for i in range(7, 21)]
@@ -204,7 +207,7 @@ class SchedulePrototype:
             for day in self.schedule.keys():
                 for t in self.schedule[day]:
                     if r.time_collision(t):
-                        row.append(t)
+                        row.append(courses_by_nrc[t.nrc].initials())
                         break
                 else:
                     row.append(None)
@@ -216,7 +219,6 @@ class SchedulePrototype:
 def combine_r(prot, possibilities, combinations):
     if len(possibilities) == 0:
         combinations.append(prot)
-        print(prot.schedule, prot.nrcs)
         return
 
     next_pos = possibilities[1:]
@@ -258,3 +260,6 @@ if __name__ == '__main__':
 
     combinations = []
     combine_r(SchedulePrototype(), c, combinations)
+
+    prot = combinations[0].sort()
+    print(prot.table(courses_by_nrc))
