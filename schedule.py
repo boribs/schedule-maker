@@ -4,6 +4,14 @@ import copy
 import tabulate
 
 VALID_DAYS = 'LAMJVS'
+DAY_DICT = {
+    'L' : 'Lunes',
+    'A' : 'Martes',
+    'M' : 'Miércoles',
+    'J' : 'Jueves',
+    'V' : 'Viernes',
+    'S' : 'Sábado',
+}
 
 # TODO: I don't like your name
 class CourseSchedule:
@@ -187,7 +195,7 @@ class SchedulePrototype:
 
     def table(self):
         keys = self.schedule.keys()
-        headers = ['Horario'] + [day for day in VALID_DAYS if day in keys]
+        headers = ['Horario'] + [DAY_DICT[day] for day in VALID_DAYS if day in keys]
         ranges = [CourseSchedule(f'{i:>02}00-{i:>02}59', None, None) for i in range(7, 21)]
 
         rows = []
