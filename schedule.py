@@ -17,7 +17,7 @@ class CourseSchedule:
         self.nrc = nrc
 
     def parse_time(self, time: str) -> tuple[int, int]:
-        assert len(time) == 9 and type(time) == str and time[4] == '-'
+        assert len(time) == 9 and time[4] == '-'
         val = tuple(map(int, time.split('-')))
         assert val[0] < val[1]
 
@@ -27,8 +27,6 @@ class CourseSchedule:
         """
         Returns True only if this object's time collides with `schedule`'s time.
         """
-
-        assert type(other) == type(self)
 
         if (self.time[0] < other.time[0] < self.time[1] or
             other.time[0] < self.time[0] < other.time[1] or
@@ -46,7 +44,7 @@ class CourseSchedule:
         # return f'{self.time[0]}-{self.time[1]} :: {self.room}'
         return f'{self.time[0]}-{self.time[1]}::{self.nrc}'
 
-    def __eq__(self, other):
+    def __eq__(self, other: any):
         if type(self) != type(other):
             return False
         else:
