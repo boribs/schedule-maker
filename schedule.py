@@ -41,6 +41,12 @@ class CourseSchedule:
     def time_key(self):
         return int(f'{self.time[0]}{self.time[1]}')
 
+    def pretty_print(self):
+        t = (str(self.time[0]), str(self.time[1]))
+        f = lambda s: f'{s[:-2]:>02}:{s[-2:]}'
+
+        return f'{f(t[0])} - {f(t[1])}'
+
     def __repr__(self):
         # return f'{self.time[0]}-{self.time[1]} :: {self.room}'
         return f'{self.time[0]}-{self.time[1]}::{self.nrc}'
@@ -186,7 +192,7 @@ class SchedulePrototype:
 
         rows = []
         for r in ranges:
-            row = [r]
+            row = [r.pretty_print()]
             for day in self.schedule.keys():
                 for t in self.schedule[day]:
                     if r.time_collision(t):
