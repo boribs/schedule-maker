@@ -2,6 +2,7 @@ from __future__ import annotations
 import xlrd # pip install xlrd==1.2.0
 import copy
 import tabulate
+import sys
 
 VALID_DAYS = 'LAMJVS'
 DAY_DICT = {
@@ -240,7 +241,15 @@ def combine_r(prot, possibilities, combinations):
             combine_r(child, next_pos, combinations)
 
 if __name__ == '__main__':
-    courses_by_nrc = parse_file('p2024.xlsx')
+    if len(sys.argv) == 1:
+        print('Must provide .xls/.xlsx file.')
+        exit(1)
+
+    if len(sys.argv) > 2:
+        print('Must provide only one input file.')
+        exit(1)
+
+    courses_by_nrc = parse_file(sys.argv[1])
     courses_by_name = collect_courses(
         courses_by_nrc,
         [
