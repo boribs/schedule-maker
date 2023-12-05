@@ -103,12 +103,15 @@ def parse_file(filename: str) -> dict[int, Course]:
 def collect_courses(
         courses_by_nrc: dict[int, Course],
         names: list[str],
+        prof_blacklist: list[str] = [],
 ) -> dict[str, Course]:
     courses = {name : [] for name in names}
 
     for nrc in courses_by_nrc.keys():
         course = courses_by_nrc[nrc]
-        if course.name in names:
+        not_blacklist = course.professor not in prof_blacklist
+
+        if course.name in names and not_blacklist:
             courses[course.name].append(course)
 
     return courses
@@ -166,7 +169,11 @@ if __name__ == '__main__':
             'Tec.de Inteligencia Artificial',
             'Progra. Concurrente y Paralela',
         ],
-
+        prof_blacklist=[
+            'SANCHEZ - GALVEZ MARIA EUGENIA',
+            'CERON - GARNICA CARMEN',
+            'ZACARIAS - FLORES FERNANDO',
+        ]
     )
 
     c = list(courses_by_name.values())
