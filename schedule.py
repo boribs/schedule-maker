@@ -88,6 +88,8 @@ courses_by_nrc = {}
 courses_by_name = {}
 
 def parse_file(filename: str):
+    global courses_by_nrc, courses_by_name
+
     d = xlrd.open_workbook(filename)
     sheet = d.sheet_by_index(0)
 
@@ -96,7 +98,7 @@ def parse_file(filename: str):
         nrc, key, name, sec, day, time, prof, room, _ = row
 
         if courses_by_nrc.get(nrc, None) is None:
-            courses_by_nrc[nrc] = Course(nrc, key, name, sec, prof)
+            courses_by_nrc[nrc] = Course(int(nrc), key, name, sec, prof)
 
         courses_by_nrc[nrc].add_day(day, time, room)
 
