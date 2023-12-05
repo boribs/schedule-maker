@@ -80,6 +80,19 @@ class Course:
 
         return True
 
+    def time_available(self, day: str, schedule: list[CourseSchedule]) -> bool:
+        assert day in VALID_DAYS
+
+        if self.schedule.get(day, None) is None:
+            return True
+
+        for t in self.schedule[day]:
+            for s in schedule:
+                if t.time_collision(s):
+                    return False
+
+        return True
+
     def __repr__(self):
         s = f'{self.nrc}, {self.name}, {self.professor}\n'
         return s + '\n'.join(f'{key}: {self.schedule[key]}' for key in self.schedule.keys())
