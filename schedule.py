@@ -1,5 +1,6 @@
 from __future__ import annotations
 import xlrd # pip install xlrd==1.2.0
+import copy
 
 class CourseSchedule:
     """
@@ -35,7 +36,8 @@ class CourseSchedule:
         return False
 
     def __repr__(self):
-        return f'{self.time[0]}-{self.time[1]} :: {self.room}'
+        # return f'{self.time[0]}-{self.time[1]} :: {self.room}'
+        return f'{self.time[0]}-{self.time[1]}'
 
     def __eq__(self, other):
         if type(self) != type(other):
@@ -153,25 +155,21 @@ def combine_r(prot, possibilities, combinations):
             combine_r(child, next_pos, combinations)
 
 if __name__ == '__main__':
-    # parse_file('p2024.xlsx')
-    n = combina_r(Node(0), datos, [])
-    # print(n.children[0].children[0].children)
+    courses_by_nrc = parse_file('p2024.xlsx')
+    courses_by_name = collect_courses(
+        courses_by_nrc,
+        [
+            'Redes Inalambricas',
+            'Mineria de Datos',
+            'Arquitectura de Computadoras',
+            'Dllo. de Aplicaciones Moviles',
+            'Tec.de Inteligencia Artificial',
+            'Progra. Concurrente y Paralela',
+        ],
 
+    )
 
+    c = list(courses_by_name.values())
 
-"""
-
-{
-'nombre de materia' : [curso1, curso2, curso3, ...],
-'nombre de materia' : [curso1, curso2, curso3, ...],
-'nombre de materia' : [curso1, curso2, curso3, ...],
-     ...
-}
-
-
-
-
-
-
-
-"""
+    combinations = []
+    combine_r(SchedulePrototype(), c, combinations)
