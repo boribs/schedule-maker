@@ -111,16 +111,20 @@ def collect_courses(
 
     return courses
 
+
+def combine_r(prot, possibilities, combinations):
+    if len(possibilities) == 0:
+        combinations.append(prot)
+        print(prot.schedule, prot.nrcs)
         return
 
-    next_pos = posibilidades[1:]
-    for i, p in enumerate(posibilidades[0]):
-        nodo.children.append(Node(p))
-        next_prog = prog.copy() + [p]
-        combina_r(nodo.children[i], next_pos, next_prog)
+    next_pos = possibilities[1:]
+    for p in possibilities[0]:
+        if prot.can_add_course(p):
+            child = copy.deepcopy(prot)
+            child.add_course(p)
 
-    return nodo
-
+            combine_r(child, next_pos, combinations)
 
 if __name__ == '__main__':
     # parse_file('p2024.xlsx')
