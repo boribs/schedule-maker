@@ -224,6 +224,7 @@ class SchedulePrototype:
 
         print(tabulate.tabulate(data, tablefmt='plain') + '\n')
         print(self.table(course_by_nrc))
+        print('\n\n\n')
 
 def combine_r(prot, possibilities, combinations):
     if len(possibilities) == 0:
@@ -270,5 +271,5 @@ if __name__ == '__main__':
     combinations = []
     combine_r(SchedulePrototype(), c, combinations)
 
-    prot = combinations[0].sort()
-    print(prot.table(courses_by_nrc))
+    for prot in combinations:
+        prot.show(courses_by_nrc)
