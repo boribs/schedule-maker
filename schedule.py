@@ -48,7 +48,7 @@ class Course:
     A Course's data.
     """
 
-    def __init__(self, nrc, key, name, sec, prof):
+    def __init__(self, nrc: int, key: str, name: str, sec: str, prof: str):
         self.nrc = nrc
         self.name = name
         self.key = key
