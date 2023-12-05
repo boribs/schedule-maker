@@ -27,8 +27,8 @@ class CourseSchedule:
 
         if (self.time[0] < other.time[0] < self.time[1] or
             other.time[0] < self.time[0] < other.time[1] or
-            (self.time[0] > other.time[0] and self.time[1] < other.time[1]) or
-            (other.time[0] > self.time[0] and other.time[1] < self.time[1])
+            (self.time[0] >= other.time[0] and self.time[1] <= other.time[1]) or
+            (other.time[0] >= self.time[0] and other.time[1] <= self.time[1])
         ):
             return True
 

@@ -38,6 +38,13 @@ class RangeCollisionTester(unittest.TestCase):
         self.assertFalse(a.time_collision(b))
         self.assertFalse(b.time_collision(a))
 
+    def test_collision_with_same_range(self):
+        a = schedule.CourseSchedule('0800-0900', 'room')
+        b = schedule.CourseSchedule('0800-0900', 'room')
+
+        self.assertTrue(a.time_collision(b))
+        self.assertTrue(b.time_collision(a))
+
 class CourseScheduleAddDayTester(unittest.TestCase):
     """
     Tests for the Courses.add_day method.
