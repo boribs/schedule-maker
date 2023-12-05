@@ -174,6 +174,12 @@ class SchedulePrototype:
 
             self.schedule[day].extend(course.schedule[day])
 
+    def sort(self):
+        for day in self.schedule.keys():
+            self.schedule[day].sort(key=lambda n: n.time_key())
+
+        return self
+
 def combine_r(prot, possibilities, combinations):
     if len(possibilities) == 0:
         combinations.append(prot)
