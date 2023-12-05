@@ -39,6 +39,9 @@ class CourseSchedule:
 
         return False
 
+    def time_key(self):
+        return int(f'{self.time[0]}{self.time[1]}')
+
     def __repr__(self):
         # return f'{self.time[0]}-{self.time[1]} :: {self.room}'
         return f'{self.time[0]}-{self.time[1]}::{self.nrc}'

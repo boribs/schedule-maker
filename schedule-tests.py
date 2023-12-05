@@ -55,6 +55,25 @@ class RangeCollisionTester(unittest.TestCase):
         self.assertTrue(a.time_collision(b))
         self.assertTrue(b.time_collision(a))
 
+class CourseScheduleTimeKeyTester(unittest.TestCase):
+    def test_time_key_1(self):
+        self.assertEqual(
+            fast_schedule('0700-0859').time_key(),
+            700859
+        )
+
+    def test_time_key_2(self):
+        self.assertEqual(
+            fast_schedule('0729-0929').time_key(),
+            729929
+        )
+
+    def test_time_key_3(self):
+        self.assertEqual(
+            fast_schedule('1200-1359').time_key(),
+            12001359
+        )
+
 class CourseScheduleAddDayTester(unittest.TestCase):
     """
     Tests for the Courses.add_day method.
