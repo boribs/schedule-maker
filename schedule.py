@@ -4,15 +4,17 @@ import copy
 
 VALID_DAYS = 'LAMJVS'
 
+# TODO: I don't like your name
 class CourseSchedule:
     """
     This class stores individual course's class time and classroom.
     It's basically a named tuple, but with time format conversion.
     """
 
-    def __init__(self, time: str, room: str):
+    def __init__(self, time: str, room: str, nrc: int):
         self.time = self.parse_time(time)
         self.room = room
+        self.nrc = nrc
 
     def parse_time(self, time: str) -> tuple[int, int]:
         assert len(time) == 9 and type(time) == str and time[4] == '-'
@@ -39,7 +41,7 @@ class CourseSchedule:
 
     def __repr__(self):
         # return f'{self.time[0]}-{self.time[1]} :: {self.room}'
-        return f'{self.time[0]}-{self.time[1]}'
+        return f'{self.time[0]}-{self.time[1]}::{self.nrc}'
 
     def __eq__(self, other):
         if type(self) != type(other):
@@ -63,7 +65,7 @@ class Course:
     def add_day(self, day: str, time: str, room: str) -> bool:
         assert day in VALID_DAYS
 
-        cs = CourseSchedule(time, room) # schedule we're trying to add
+        cs = CourseSchedule(time, room, self.nrc) # schedule we're trying to add
 
         # empty day, no problem
         if self.schedule.get(day, None) is None:
@@ -122,7 +124,7 @@ def collect_courses(
 ) -> dict[str, Course]:
     courses = {name : [] for name in names}
     time_restrictions = {
-        key : [CourseSchedule(s, '...') for s in time_restrictions[key]]
+        key : [CourseSchedule(s, '...', 0) for s in time_restrictions[key]]
         for key in time_restrictions.keys()
     }
 
