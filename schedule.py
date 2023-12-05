@@ -97,6 +97,20 @@ def parse_file(filename: str) -> dict[int, Course]:
 
     return courses_by_nrc
 
+# TODO: Add filters!
+def collect_courses(
+        courses_by_nrc: dict[int, Course],
+        names: list[str],
+) -> dict[str, Course]:
+    courses = {name : [] for name in names}
+
+    for nrc in courses_by_nrc.keys():
+        course = courses_by_nrc[nrc]
+        if course.name in names:
+            courses[course.name].append(course)
+
+    return courses
+
         return
 
     next_pos = posibilidades[1:]
