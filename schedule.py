@@ -111,6 +111,32 @@ def collect_courses(
 
     return courses
 
+class SchedulePrototype:
+    def __init__(self):
+        self.schedule = {}
+        self.nrcs = []
+
+    def can_add_course(self, course: Course):
+        for day in course.schedule.keys():
+            # day not in schedule, no collision
+            if self.schedule.get(day, None) is None:
+                continue
+            else:
+                for sp_time_block in self.schedule[day]:
+                    for c_time_block in course.schedule[day]:
+                        if sp_time_block.time_collision(c_time_block):
+                            return False
+
+        return True
+
+    def add_course(self, course: Course):
+        self.nrcs.append(course.nrc)
+
+        for day in course.schedule.keys():
+            if self.schedule.get(day, None) is None:
+                self.schedule[day] = []
+
+            self.schedule[day].extend(course.schedule[day])
 
 def combine_r(prot, possibilities, combinations):
     if len(possibilities) == 0:
