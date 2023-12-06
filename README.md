@@ -93,6 +93,12 @@ En `profesores` se anotan los profesores no deseados.
 En `horarios` se antonan los horarios no deseados. El formato de las horas
 debe ser el mismo que usa BUAP: "hhmm-hhmm".
 
+Adicionalmente, se puede especificar una dirección para el archivo de configuración
+usando el parámetro `--config` (`-c`):
+```bash
+python schedule.py data.xlsx -c config.json
+```
+
 ----
 
 ## Roadmap

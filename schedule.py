@@ -374,18 +374,22 @@ def combine_r(prot, possibilities, combinations):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('data')
+    parser.add_argument('-c', '--config')
     args = parser.parse_args()
 
     if not args.data.endswith('.xlsx') and not args.data.endswith('.xls'):
         print('Schedule data file must be .xls/.xlsx termina.')
         exit(1)
 
+    config_file = args.config if args.config else CONFIG_FILENAME
+    print(config_file)
+
     try:
-        with open(CONFIG_FILENAME, 'r') as f:
+        with open(config_file, 'r') as f:
             config = json.load(f)
             print(config)
     except Exception as e:
-        print(f'No config file found. Creating {CONFIG_FILENAME}')
+        print(f'No config file found. Creating {config_file}')
 
         with open(CONFIG_FILENAME, 'w') as c:
             c.write(json.dumps(CONFIG_BODY, indent=4))
