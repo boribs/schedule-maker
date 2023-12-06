@@ -48,6 +48,50 @@ Horario        Lunes    Martes    Miércoles    Jueves    Viernes
 
 ## Configuración
 
+Por defecto se busca un archivo llamado `schedule-config.json`. Si no lo encuentra,
+crea una plantilla con el siguiente contenido:
+```json
+{
+    "materias": [
+        "Materia 1",
+        "Materia 2"
+    ],
+    "profesores": [
+        "Profesor 1",
+        "Profesor 2"
+    ],
+    "horarios": {
+        "L": [
+            "0700-0859",
+            "1300-1459"
+        ],
+        "A": [
+            "0700-0859",
+            "1300-1459"
+        ],
+        "M": [
+            "0700-0859",
+            "1300-1459"
+        ],
+        "J": [
+            "0700-0859",
+            "1300-1459"
+        ],
+        "V": [
+            "0700-0859",
+            "1300-1459"
+        ]
+    }
+}
+```
+
+Bajo `materias` deben ir los nombres de las materias tal cual aparecen
+en el documento.
+
+En `profesores` se anotan los profesores no deseados.
+
+En `horarios` se antonan los horarios no deseados. El formato de las horas
+debe ser el mismo que usa BUAP: "hhmm-hhmm".
 
 ----
 
