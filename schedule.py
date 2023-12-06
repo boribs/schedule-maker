@@ -382,14 +382,12 @@ if __name__ == '__main__':
         exit(1)
 
     config_file = args.config if args.config else CONFIG_FILENAME
-    print(config_file)
 
     try:
         with open(config_file, 'r') as f:
             config = json.load(f)
-            print(config)
     except Exception as e:
-        print(f'No config file found. Creating {config_file}')
+        print(f'No config file found. Creating {CONFIG_FILENAME}')
 
         with open(CONFIG_FILENAME, 'w') as c:
             c.write(json.dumps(CONFIG_BODY, indent=4))
@@ -399,27 +397,9 @@ if __name__ == '__main__':
     courses_by_nrc = parse_file(args.data)
     courses_by_name = collect_courses(
         courses_by_nrc,
-        [
-            'Redes Inalambricas',
-            'Mineria de Datos',
-            'Arquitectura de Computadoras',
-            'Dllo. de Aplicaciones Moviles',
-            'Tec.de Inteligencia Artificial',
-            'Progra. Concurrente y Paralela',
-        ],
-        prof_blacklist=[
-            'SANCHEZ - GALVEZ MARIA EUGENIA',
-            'CERON - GARNICA CARMEN',
-            'ZACARIAS - FLORES FERNANDO',
-        ],
-        time_restrictions={
-            'L' : ['0700-0859', '1300-1459'],
-            'A' : ['0700-0859', '1300-1459'],
-            'M' : ['0700-0859', '1300-1459'],
-            'J' : ['0700-0859', '1300-1459'],
-            'V' : ['0700-0859', '1300-1459'],
-            'S' : ['0700-0859', '1300-1459'],
-        }
+        config['materias'],
+        prof_blacklist=config['profesores'],
+        time_restrictions=config['horarios']
     )
 
     c = list(courses_by_name.values())
