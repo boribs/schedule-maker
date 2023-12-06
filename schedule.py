@@ -47,10 +47,20 @@ class CourseSchedule:
 
         return False
 
-    def time_key(self):
+    def time_key(self) -> int:
+        """
+        Returns a key. can be used to sort different time blocks.
+        """
+
         return int(f'{self.time[0]}{self.time[1]}')
 
-    def pretty_print(self):
+    # TODO: I don't like your name
+    def pretty_print(self) -> str:
+        """
+        Returns a string with this time block's range, but with a nicer format.
+        'hh:mm - hh:mm'
+        """
+
         t = (str(self.time[0]), str(self.time[1]))
         f = lambda s: f'{s[:-2]:>02}:{s[-2:]}'
 
@@ -79,7 +89,17 @@ class Course:
         self.section = sec
         self.schedule = {}
 
+    # TODO: I don't like your name
     def add_day(self, day: str, time: str, room: str) -> bool:
+        """
+        Adds a classe's time block on `day`.
+
+        Each course is composed on classes. Classes are just time blocks
+        stored on a day's list (self.schedule[day]).
+        A course can only have one of each class per day, that is, there
+        cannot be repeated classes on the same day.
+        """
+
         assert day in VALID_DAYS
 
         cs = CourseSchedule(time, room, self.nrc) # schedule we're trying to add
@@ -100,6 +120,10 @@ class Course:
         return True
 
     def time_available(self, day: str, schedule: list[CourseSchedule]) -> bool:
+        """
+        Checks if this course's time blocks fit with `schedule` on `day`.
+        """
+
         assert day in VALID_DAYS
 
         if self.schedule.get(day, None) is None:
@@ -113,6 +137,14 @@ class Course:
         return True
 
     def initials(self):
+        """
+        Returs this course's name initials.
+        For example:
+
+        Tecnologías de la Información -> TdlI
+        Minería de Datos              -> MdD
+        Redes Inalámbricas            -> RI
+        """
         return ''.join(map(lambda s: s[0], self.name.split()))
 
     def __repr__(self):
@@ -120,6 +152,11 @@ class Course:
         return s + '\n'.join(f'{key}: {self.schedule[key]}' for key in self.schedule.keys())
 
 def parse_file(filename: str) -> dict[int, Course]:
+    """
+    Parses .xlsx file and returns a dictionary [nrc -> Course].
+    This file has to have the same format as classes/p2024.xlsx.
+    """
+
     courses_by_nrc = {}
 
     d = xlrd.open_workbook(filename)
@@ -141,7 +178,14 @@ def collect_courses(
         names: list[str],
         prof_blacklist: list[str] = [],
         time_restrictions: dict[str, list[str]] = {},
-) -> dict[str, Course]:
+) -> dict[str, list[Course]]:
+    """
+    Gets all relevant courses considering filters:
+        - names: the names of the courses
+        - prof_blacklist: unwanted professors
+        - time_restrictions: unwanted time blocks
+    """
+
     courses = {name : [] for name in names}
     time_restrictions = {
         key : [CourseSchedule(s, '...', 0) for s in time_restrictions[key]]
@@ -165,11 +209,19 @@ def collect_courses(
     return courses
 
 class SchedulePrototype:
+    """
+    Holder class for complete schedule.
+    """
+
     def __init__(self):
         self.schedule = {}
         self.nrcs = []
 
-    def can_add_course(self, course: Course):
+    def can_add_course(self, course: Course) -> bool:
+        """
+        Checks if a course's time blocks don't collide with existing ones.
+        """
+
         for day in course.schedule.keys():
             # day not in schedule, no collision
             if self.schedule.get(day, None) is None:
@@ -183,6 +235,11 @@ class SchedulePrototype:
         return True
 
     def add_course(self, course: Course):
+        """
+        Adds a course's time blocks.
+        Doesn't consider compatibility with existing schedule.
+        """
+
         self.nrcs.append(course.nrc)
 
         for day in course.schedule.keys():
@@ -191,13 +248,40 @@ class SchedulePrototype:
 
             self.schedule[day].extend(course.schedule[day])
 
-    def sort(self):
+    def sort(self) -> SchedulePrototype:
+        """
+        Sorts all time blocks. Returns self.
+        """
+
         for day in self.schedule.keys():
             self.schedule[day].sort(key=lambda n: n.time_key())
 
         return self
 
-    def table(self, courses_by_nrc: dict[int, Course]):
+    def table(self, courses_by_nrc: dict[int, Course]) -> str:
+        """
+        Returns a string that represents a table containing relevant
+        data for the schedule. Output looks like this:
+        ```txt
+        Horario        Lunes    Martes    Miércoles    Jueves    Viernes
+        -------------  -------  --------  -----------  --------  ---------
+        07:00 - 07:59
+        08:00 - 08:59
+        09:00 - 09:59
+        10:00 - 10:59
+        11:00 - 11:59  MdD      MdD       MdD          TIA       TIA
+        12:00 - 12:59  TIA      MdD       MdD          TIA       TIA
+        13:00 - 13:59
+        14:00 - 14:59
+        15:00 - 15:59  DdAM     DdAM      DdAM         PCyP      PCyP
+        16:00 - 16:59  PCyP     DdAM      DdAM         PCyP      PCyP
+        17:00 - 17:59  RI       RI        RI           AdC       AdC
+        18:00 - 18:59  AdC      RI        RI           AdC       AdC
+        19:00 - 19:59
+        20:00 - 20:59
+        ```
+        """
+
         keys = self.schedule.keys()
         headers = ['Horario'] + [DAY_DICT[day] for day in VALID_DAYS if day in keys]
         ranges = [CourseSchedule(f'{i:>02}00-{i:>02}59', None, None) for i in range(7, 21)]
@@ -218,6 +302,36 @@ class SchedulePrototype:
         return tabulate.tabulate(rows, headers=headers)
 
     def show(self, course_by_nrc: dict[int, Course]):
+        """
+        Prints course nrc, names and professor as well as the table.
+        Output looks like this:
+        ```txt
+        58469  [RI]    Redes Inalambricas              SORIANO - ROSAS JOSE ISABEL
+        58478  [MdD]   Mineria de Datos                TECUANHUEHUE - VERA PEDRO
+        51821  [AdC]   Arquitectura de Computadoras    MALDONADO - GARCIA ABRAHAM
+        57340  [DdAM]  Dllo. de Aplicaciones Moviles   ELVIRA - ENRIQUEZ ROBERTO
+        57690  [TIA]   Tec.de Inteligencia Artificial  OLMOS - PINEDA IVAN
+        58546  [PCyP]  Progra. Concurrente y Paralela  VARGAS - LOMELI MIGUEL
+
+        Horario        Lunes    Martes    Miércoles    Jueves    Viernes
+        -------------  -------  --------  -----------  --------  ---------
+        07:00 - 07:59
+        08:00 - 08:59
+        09:00 - 09:59
+        10:00 - 10:59
+        11:00 - 11:59  AdC      TIA       TIA          AdC       AdC
+        12:00 - 12:59  TIA      TIA       TIA          AdC       AdC
+        13:00 - 13:59
+        14:00 - 14:59
+        15:00 - 15:59  DdAM     PCyP      PCyP         DdAM      DdAM
+        16:00 - 16:59  PCyP     PCyP      PCyP         DdAM      DdAM
+        17:00 - 17:59           MdD       MdD
+        18:00 - 18:59  MdD      MdD       MdD
+        19:00 - 19:59           RI        RI
+        20:00 - 20:59  RI       RI        RI
+        ```
+        """
+
         data = []
         for nrc in self.nrcs:
             course = courses_by_nrc[nrc]
@@ -228,6 +342,10 @@ class SchedulePrototype:
         print('\n\n\n')
 
 def combine_r(prot, possibilities, combinations):
+    """
+    Recursive method. Gets all possible schedule combinations given `possibilities`.
+    """
+
     if len(possibilities) == 0:
         combinations.append(prot)
         return
