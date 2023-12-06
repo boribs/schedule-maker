@@ -1,6 +1,7 @@
 from __future__ import annotations
 import argparse
 import copy
+import json
 import xlrd # pip install xlrd==1.2.0
 import tabulate
 
@@ -12,6 +13,18 @@ DAY_DICT = {
     'J' : 'Jueves',
     'V' : 'Viernes',
     'S' : 'Sábado',
+}
+CONFIG_FILENAME = 'schedule-config.json'
+CONFIG_BODY = {
+    'materias' : ['Materia 1', 'Materia 2'],
+    'profesores' : ['Profesor 1', 'Profesor 2'],
+    'horarios' : {
+        'L' : ['0700-0859', '1300-1459'],
+        'A' : ['0700-0859', '1300-1459'],
+        'M' : ['0700-0859', '1300-1459'],
+        'J' : ['0700-0859', '1300-1459'],
+        'V' : ['0700-0859', '1300-1459']
+    }
 }
 
 # TODO: I don't like your name
@@ -360,14 +373,26 @@ def combine_r(prot, possibilities, combinations):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('schedule')
+    parser.add_argument('data')
     args = parser.parse_args()
 
-    if not args.schedule.endswith('.xlsx') and not args.schedule.endswith('.xls'):
-        print('Must provide .xls/.xlsx file.')
+    if not args.data.endswith('.xlsx') and not args.data.endswith('.xls'):
+        print('Schedule data file must be .xls/.xlsx termina.')
         exit(1)
 
-    courses_by_nrc = parse_file(args.schedule)
+    try:
+        with open(CONFIG_FILENAME, 'r') as f:
+            config = json.load(f)
+            print(config)
+    except Exception as e:
+        print(f'No config file found. Creating {CONFIG_FILENAME}')
+
+        with open(CONFIG_FILENAME, 'w') as c:
+            c.write(json.dumps(CONFIG_BODY, indent=4))
+
+        exit(1)
+
+    courses_by_nrc = parse_file(args.data)
     courses_by_name = collect_courses(
         courses_by_nrc,
         [
