@@ -18,11 +18,13 @@ DAY_DICT = {
 
 class ConfigKey(Enum):
     PROFESSOR_BLACKLIST = auto()
+    COURSE_BLACKLIST = auto()
     TIME_RESTRICTIONS = auto()
     CLASS_NAMES = auto()
 
 CONFIG_KEYS = {
     ConfigKey.PROFESSOR_BLACKLIST : 'sin-profesores',
+    ConfigKey.COURSE_BLACKLIST : 'sin-cursos',
     ConfigKey.TIME_RESTRICTIONS : 'sin-horarios',
     ConfigKey.CLASS_NAMES : 'materias',
 }
@@ -31,6 +33,7 @@ CONFIG_FILENAME = 'schedule-config.json'
 CONFIG_BODY = {
     ConfigKey.CLASS_NAMES : ['Materia 1', 'Materia 2'],
     ConfigKey.PROFESSOR_BLACKLIST : ['Profesor 1', 'Profesor 2'],
+    ConfigKey.COURSE_BLACKLIST : ['nrc1', 'nrc2'],
     # 'con-profesores' : ['Profesor 1', 'Profesor 2'],
     # 'sin-cursos' : [],
     # 'con-cursos' : [],
@@ -206,6 +209,7 @@ def collect_courses(
         courses_by_nrc: dict[int, Course],
         names: list[str],
         professor_blacklist: list[str] = [],
+        course_blacklist: list[int] = [],
         time_restrictions: dict[str, list[str]] = {},
 ) -> dict[str, list[Course]]:
     """
@@ -213,9 +217,11 @@ def collect_courses(
         - names: the names of the courses
         - prof_blacklist: unwanted professors
         - time_restrictions: unwanted time blocks
+        - course-blacklist: unwanted courses (nrc)
     """
 
     professor_blacklist = set(professor_blacklist)
+    course_blacklist = set(map(int, course_blacklist))
 
     courses = {name : [] for name in names}
     time_restrictions = {
@@ -225,7 +231,9 @@ def collect_courses(
 
     for nrc in courses_by_nrc.keys():
         course = courses_by_nrc[nrc]
-        not_blacklist = course.professor not in prof_blacklist
+        prof_blacklist = course.professor in professor_blacklist
+        nrc_blacklist = course.nrc in course_blacklist
+        not_blacklist = not (prof_blacklist or nrc_blacklist)
 
         time_available = True
         for day in course.schedule.keys():
@@ -415,6 +423,7 @@ if __name__ == '__main__':
         courses_by_nrc,
         config[CONFIG_KEYS[ConfigKey.CLASS_NAMES]],
         professor_blacklist=config[CONFIG_KEYS[ConfigKey.PROFESSOR_BLACKLIST]],
+        course_blacklist=config[CONFIG_KEYS[ConfigKey.COURSE_BLACKLIST]],
         time_restrictions=config[CONFIG_KEYS[ConfigKey.TIME_RESTRICTIONS]]
     )
 
