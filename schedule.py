@@ -4,6 +4,7 @@ import copy
 import json
 import xlrd # pip install xlrd==1.2.0
 import tabulate
+import sys
 from enum import Enum, auto
 
 VALID_DAYS = 'LAMJVS'
@@ -35,7 +36,6 @@ CONFIG_BODY = {
     ConfigKey.PROFESSOR_BLACKLIST : ['Profesor 1', 'Profesor 2'],
     ConfigKey.COURSE_BLACKLIST : ['nrc1', 'nrc2'],
     # 'con-profesores' : ['Profesor 1', 'Profesor 2'],
-    # 'sin-cursos' : [],
     # 'con-cursos' : [],
     ConfigKey.TIME_RESTRICTIONS : {
         'L' : ['0700-0859', '1300-1459'],
@@ -419,13 +419,21 @@ if __name__ == '__main__':
         exit(1)
 
     courses_by_nrc = parse_file(args.data)
-    courses_by_name = collect_courses(
-        courses_by_nrc,
-        config[CONFIG_KEYS[ConfigKey.CLASS_NAMES]],
-        professor_blacklist=config[CONFIG_KEYS[ConfigKey.PROFESSOR_BLACKLIST]],
-        course_blacklist=config[CONFIG_KEYS[ConfigKey.COURSE_BLACKLIST]],
-        time_restrictions=config[CONFIG_KEYS[ConfigKey.TIME_RESTRICTIONS]]
-    )
+
+    try:
+        courses_by_name = collect_courses(
+            courses_by_nrc,
+            config[CONFIG_KEYS[ConfigKey.CLASS_NAMES]],
+            professor_blacklist=config[CONFIG_KEYS[ConfigKey.PROFESSOR_BLACKLIST]],
+            course_blacklist=config[CONFIG_KEYS[ConfigKey.COURSE_BLACKLIST]],
+            time_restrictions=config[CONFIG_KEYS[ConfigKey.TIME_RESTRICTIONS]]
+        )
+    except KeyError as e:
+        print(
+            f'Key "{e.args[0]}" not found. Make sure to update `{config_file}`.',
+            file=sys.stderr
+        )
+        exit(1)
 
     c = list(courses_by_name.values())
 
