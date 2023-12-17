@@ -205,7 +205,7 @@ def parse_file(filename: str) -> dict[int, Course]:
 def collect_courses(
         courses_by_nrc: dict[int, Course],
         names: list[str],
-        prof_blacklist: list[str] = [],
+        professor_blacklist: list[str] = [],
         time_restrictions: dict[str, list[str]] = {},
 ) -> dict[str, list[Course]]:
     """
@@ -214,6 +214,8 @@ def collect_courses(
         - prof_blacklist: unwanted professors
         - time_restrictions: unwanted time blocks
     """
+
+    professor_blacklist = set(professor_blacklist)
 
     courses = {name : [] for name in names}
     time_restrictions = {
@@ -412,7 +414,7 @@ if __name__ == '__main__':
     courses_by_name = collect_courses(
         courses_by_nrc,
         config[CONFIG_KEYS[ConfigKey.CLASS_NAMES]],
-        prof_blacklist=config[CONFIG_KEYS[ConfigKey.PROFESSOR_BLACKLIST]],
+        professor_blacklist=config[CONFIG_KEYS[ConfigKey.PROFESSOR_BLACKLIST]],
         time_restrictions=config[CONFIG_KEYS[ConfigKey.TIME_RESTRICTIONS]]
     )
 
