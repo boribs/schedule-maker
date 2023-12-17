@@ -4,6 +4,7 @@ import copy
 import json
 import xlrd # pip install xlrd==1.2.0
 import tabulate
+from enum import Enum, auto
 
 VALID_DAYS = 'LAMJVS'
 DAY_DICT = {
@@ -14,11 +15,26 @@ DAY_DICT = {
     'V' : 'Viernes',
     'S' : 'Sábado',
 }
+
+class ConfigKey(Enum):
+    PROFESSOR_BLACKLIST = auto()
+    TIME_RESTRICTIONS = auto()
+    CLASS_NAMES = auto()
+
+CONFIG_KEYS = {
+    ConfigKey.PROFESSOR_BLACKLIST : 'sin-profesores',
+    ConfigKey.TIME_RESTRICTIONS : 'sin-horarios',
+    ConfigKey.CLASS_NAMES : 'materias',
+}
+
 CONFIG_FILENAME = 'schedule-config.json'
 CONFIG_BODY = {
-    'materias' : ['Materia 1', 'Materia 2'],
-    'profesores' : ['Profesor 1', 'Profesor 2'],
-    'horarios' : {
+    ConfigKey.CLASS_NAMES : ['Materia 1', 'Materia 2'],
+    ConfigKey.PROFESSOR_BLACKLIST : ['Profesor 1', 'Profesor 2'],
+    # 'con-profesores' : ['Profesor 1', 'Profesor 2'],
+    # 'sin-cursos' : [],
+    # 'con-cursos' : [],
+    ConfigKey.TIME_RESTRICTIONS : {
         'L' : ['0700-0859', '1300-1459'],
         'A' : ['0700-0859', '1300-1459'],
         'M' : ['0700-0859', '1300-1459'],
@@ -395,9 +411,9 @@ if __name__ == '__main__':
     courses_by_nrc = parse_file(args.data)
     courses_by_name = collect_courses(
         courses_by_nrc,
-        config['materias'],
-        prof_blacklist=config['profesores'],
-        time_restrictions=config['horarios']
+        config[CONFIG_KEYS[ConfigKey.CLASS_NAMES]],
+        prof_blacklist=config[CONFIG_KEYS[ConfigKey.PROFESSOR_BLACKLIST]],
+        time_restrictions=config[CONFIG_KEYS[ConfigKey.TIME_RESTRICTIONS]]
     )
 
     c = list(courses_by_name.values())
