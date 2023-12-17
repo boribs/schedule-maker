@@ -295,20 +295,18 @@ class SchedulePrototype:
         ```
         """
 
-        keys = self.schedule.keys()
-        headers = ['Horario'] + [DAY_DICT[day] for day in VALID_DAYS if day in keys]
+        keys = [day for day in VALID_DAYS if day in self.schedule.keys()]
+        headers = ['Horario'] + [DAY_DICT[day] for day in keys]
         ranges = [CourseSchedule(f'{i:>02}00-{i:>02}59', None, None) for i in range(7, 21)]
 
         rows = []
         for r in ranges:
-            row = [r.pretty_print()]
-            for day in self.schedule.keys():
+            row = [r.pretty_print()] + [None] * 5
+            for i, day in enumerate(keys):
                 for t in self.schedule[day]:
                     if r.time_collision(t):
-                        row.append(courses_by_nrc[t.nrc].initials())
+                        row[i + 1] = courses_by_nrc[t.nrc].initials()
                         break
-                else:
-                    row.append(None)
 
             rows.append(row)
 
