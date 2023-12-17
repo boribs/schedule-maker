@@ -56,11 +56,15 @@ crea una plantilla con el siguiente contenido:
         "Materia 1",
         "Materia 2"
     ],
-    "profesores": [
+    "sin-profesores": [
         "Profesor 1",
         "Profesor 2"
     ],
-    "horarios": {
+    "sin-cursos" : [
+        "nrc1",
+        "nrc2"
+    ],
+    "sin-horarios": {
         "L": [
             "0700-0859",
             "1300-1459"
@@ -88,9 +92,11 @@ crea una plantilla con el siguiente contenido:
 Bajo `materias` deben ir los nombres de las materias tal cual aparecen
 en el documento.
 
-En `profesores` se anotan los profesores no deseados.
+En `sin-profesores` se anotan los profesores no deseados.
 
-En `horarios` se antonan los horarios no deseados. El formato de las horas
+En `sin-cursos` se anotan los NRCs de los cursos no deseados. Esto también puede ser usado para anotar los cursos llenos durante el registro de materias.
+
+En `sin-horarios` se antonan los horarios no deseados. El formato de las horas
 debe ser el mismo que usa BUAP: "hhmm-hhmm".
 
 Adicionalmente, se puede especificar una dirección para el archivo de configuración
