@@ -103,6 +103,7 @@ python schedule.py data.xlsx -c config.json
 
 ## Roadmap
 
- ☐ Configuración externa. \
+ ✔ Configuración externa. \
+ ☐ Mostrar combinaciones con `NRC`s especificos. \
  ☐ Dar soporte a `PDF`s. \
  ☐ Dar soporte a otras facultades.
