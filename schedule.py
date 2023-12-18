@@ -19,6 +19,7 @@ DAY_DICT = {
 
 class ConfigKey(Enum):
     PROFESSOR_BLACKLIST = auto()
+    PROFESSOR_WHITELIST = auto()
     COURSE_BLACKLIST = auto()
     COURSE_WHITELIST = auto()
     TIME_RESTRICTIONS = auto()
@@ -26,6 +27,7 @@ class ConfigKey(Enum):
 
 CONFIG_KEYS = {
     ConfigKey.PROFESSOR_BLACKLIST : 'sin-profesores',
+    ConfigKey.PROFESSOR_WHITELIST : 'con-profesores',
     ConfigKey.COURSE_BLACKLIST : 'sin-cursos',
     ConfigKey.COURSE_WHITELIST : 'con-cursos',
     ConfigKey.TIME_RESTRICTIONS : 'sin-horarios',
@@ -36,7 +38,7 @@ CONFIG_FILENAME = 'schedule-config.json'
 CONFIG_BODY = {
     ConfigKey.CLASS_NAMES : ['Materia 1', 'Materia 2'],
     ConfigKey.PROFESSOR_BLACKLIST : ['Profesor 1', 'Profesor 2'],
-    # 'con-profesores' : ['Profesor 1', 'Profesor 2'],
+    ConfigKey.PROFESSOR_WHITELIST : ['Profesor 1', 'Profesor 2'],
     ConfigKey.COURSE_BLACKLIST : ['nrc1', 'nrc2'],
     ConfigKey.COURSE_WHITELIST : ['nrc1', 'nrc2'],
     ConfigKey.TIME_RESTRICTIONS : {
@@ -60,6 +62,7 @@ class CourseSchedule:
         self.room = room
         self.nrc = nrc
 
+    # TODO: Docstring this
     def parse_time(self, time: str) -> tuple[int, int]:
         assert len(time) == 9 and time[4] == '-'
         val = tuple(map(int, time.split('-')))
@@ -223,6 +226,7 @@ def collect_courses(
     """
 
     professor_blacklist = set(professor_blacklist)
+    # TODO: Make nrcs strings
     course_blacklist = set(map(int, course_blacklist))
 
     courses = {name : [] for name in names}
@@ -298,6 +302,13 @@ class SchedulePrototype:
             self.schedule[day].sort(key=lambda n: n.time_key())
 
         return self
+
+    def get_professors(self, courses_by_nrc: dict[int, Course]) -> set[str]:
+        """
+        Returns a list with all professors in this schedule.
+        """
+
+        return set(courses_by_nrc[nrc].professor for nrc in self.nrcs)
 
     def table(self, courses_by_nrc: dict[int, Course]) -> str:
         """
@@ -380,6 +391,7 @@ class SchedulePrototype:
         print(self.table(course_by_nrc))
         print('\n\n\n')
 
+# TODO: Parameter type hints
 def combine_r(prot, possibilities, combinations):
     """
     Recursive method. Gets all possible schedule combinations given `possibilities`.
@@ -442,12 +454,23 @@ if __name__ == '__main__':
     combinations = []
     combine_r(SchedulePrototype(), c, combinations)
 
-    # filter out non white-listed courses
+    # filter out non white-listed courses and professors
     rem = []
     for i, prot in enumerate(combinations):
+        b = False
         for course in config[CONFIG_KEYS[ConfigKey.COURSE_WHITELIST]]:
             if int(course) not in prot.nrcs: # TODO: Make nrcs strings!
                 rem.append(i)
+                b = True
+                break
+
+        if b: continue
+
+        professors = prot.get_professors(courses_by_nrc)
+        for prof in config[CONFIG_KEYS[ConfigKey.PROFESSOR_WHITELIST]]:
+            if prof not in professors:
+                rem.append(i)
+                break
 
     for i in reversed(rem):
         combinations.pop(i)
