@@ -20,12 +20,14 @@ DAY_DICT = {
 class ConfigKey(Enum):
     PROFESSOR_BLACKLIST = auto()
     COURSE_BLACKLIST = auto()
+    COURSE_WHITELIST = auto()
     TIME_RESTRICTIONS = auto()
     CLASS_NAMES = auto()
 
 CONFIG_KEYS = {
     ConfigKey.PROFESSOR_BLACKLIST : 'sin-profesores',
     ConfigKey.COURSE_BLACKLIST : 'sin-cursos',
+    ConfigKey.COURSE_WHITELIST : 'con-cursos',
     ConfigKey.TIME_RESTRICTIONS : 'sin-horarios',
     ConfigKey.CLASS_NAMES : 'materias',
 }
@@ -34,9 +36,9 @@ CONFIG_FILENAME = 'schedule-config.json'
 CONFIG_BODY = {
     ConfigKey.CLASS_NAMES : ['Materia 1', 'Materia 2'],
     ConfigKey.PROFESSOR_BLACKLIST : ['Profesor 1', 'Profesor 2'],
-    ConfigKey.COURSE_BLACKLIST : ['nrc1', 'nrc2'],
     # 'con-profesores' : ['Profesor 1', 'Profesor 2'],
-    # 'con-cursos' : [],
+    ConfigKey.COURSE_BLACKLIST : ['nrc1', 'nrc2'],
+    ConfigKey.COURSE_WHITELIST : ['nrc1', 'nrc2'],
     ConfigKey.TIME_RESTRICTIONS : {
         'L' : ['0700-0859', '1300-1459'],
         'A' : ['0700-0859', '1300-1459'],
@@ -439,6 +441,16 @@ if __name__ == '__main__':
 
     combinations = []
     combine_r(SchedulePrototype(), c, combinations)
+
+    # filter out non white-listed courses
+    rem = []
+    for i, prot in enumerate(combinations):
+        for course in config[CONFIG_KEYS[ConfigKey.COURSE_WHITELIST]]:
+            if int(course) not in prot.nrcs: # TODO: Make nrcs strings!
+                rem.append(i)
+
+    for i in reversed(rem):
+        combinations.pop(i)
 
     for prot in combinations:
         prot.show(courses_by_nrc)
