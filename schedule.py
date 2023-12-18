@@ -128,7 +128,7 @@ class Course:
         self.schedule = {}
 
     # TODO: I don't like your name
-    def add_day(self, day: str, time: str, room: str) -> bool:
+    def add_class(self, day: str, time: str, room: str) -> bool:
         """
         Adds a classe's time block on `day`.
 
@@ -208,7 +208,7 @@ def parse_file(filename: str) -> dict[str, Course]:
         if courses_by_nrc.get(nrc, None) is None:
             courses_by_nrc[nrc] = Course(nrc, key, name, sec, prof)
 
-        courses_by_nrc[nrc].add_day(day, time, room)
+        courses_by_nrc[nrc].add_class(day, time, room)
 
     return courses_by_nrc
 

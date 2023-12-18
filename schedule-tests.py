@@ -76,25 +76,25 @@ class CourseDataTimeKeyTester(unittest.TestCase):
 
 class CourseDataAddDayTester(unittest.TestCase):
     """
-    Tests for the Courses.add_day method.
+    Tests for the Courses.add_class method.
     """
 
-    def test_add_day_on_empty(self):
+    def test_add_class_on_empty(self):
         for d in 'LAMJVS':
             t, r = ('0700-0759', 'room')
             c = fast_course()
 
-            self.assertTrue(c.add_day(d, t, r))
+            self.assertTrue(c.add_class(d, t, r))
 
             self.assertEqual(len(c.schedule), 1)
             self.assertEqual(len(c.schedule[d]), 1)
             self.assertEqual(c.schedule[d], [fast_schedule(t, r)])
 
-    def test_add_day_on_non_conflicting_schedule_same_day(self):
+    def test_add_class_on_non_conflicting_schedule_same_day(self):
         c = fast_course()
 
-        self.assertTrue(c.add_day('L', '0700-0759', 'room'))
-        self.assertTrue(c.add_day('L', '0800-0859', 'room'))
+        self.assertTrue(c.add_class('L', '0700-0759', 'room'))
+        self.assertTrue(c.add_class('L', '0800-0859', 'room'))
 
         self.assertEqual(len(c.schedule), 1)
         self.assertEqual(len(c.schedule['L']), 2)
@@ -106,11 +106,11 @@ class CourseDataAddDayTester(unittest.TestCase):
             ],
         )
 
-    def test_add_day_on_non_conflicting_schedule_same_day(self):
+    def test_add_class_on_non_conflicting_schedule_same_day(self):
         c = fast_course()
 
-        self.assertTrue(c.add_day('L', '0700-0759', 'room'))
-        self.assertTrue(c.add_day('L', '1000-1159', 'room'))
+        self.assertTrue(c.add_class('L', '0700-0759', 'room'))
+        self.assertTrue(c.add_class('L', '1000-1159', 'room'))
 
         self.assertEqual(len(c.schedule), 1)
         self.assertEqual(len(c.schedule['L']), 2)
@@ -122,11 +122,11 @@ class CourseDataAddDayTester(unittest.TestCase):
             ],
         )
 
-    def test_add_day_on_non_conflicting_schedule_different_day_different_schedule(self):
+    def test_add_class_on_non_conflicting_schedule_different_day_different_schedule(self):
         c = fast_course()
 
-        self.assertTrue(c.add_day('L', '0700-0759', 'room'))
-        self.assertTrue(c.add_day('M', '1000-1159', 'room'))
+        self.assertTrue(c.add_class('L', '0700-0759', 'room'))
+        self.assertTrue(c.add_class('M', '1000-1159', 'room'))
 
         self.assertEqual(len(c.schedule), 2)
         self.assertEqual(len(c.schedule['L']), 1)
@@ -140,11 +140,11 @@ class CourseDataAddDayTester(unittest.TestCase):
             [fast_schedule('1000-1159', 'room')]
         )
 
-    def test_add_day_on_non_conflicting_schedule_different_day_same_schedule(self):
+    def test_add_class_on_non_conflicting_schedule_different_day_same_schedule(self):
         c = fast_course()
 
-        self.assertTrue(c.add_day('L', '0700-0759', 'room'))
-        self.assertTrue(c.add_day('M', '0700-0759', 'room'))
+        self.assertTrue(c.add_class('L', '0700-0759', 'room'))
+        self.assertTrue(c.add_class('M', '0700-0759', 'room'))
 
         self.assertEqual(len(c.schedule), 2)
         self.assertEqual(len(c.schedule['L']), 1)
@@ -158,11 +158,11 @@ class CourseDataAddDayTester(unittest.TestCase):
             [fast_schedule('0700-0759', 'room')]
         )
 
-    def test_add_day_fails_on_conflicting_schedule_1(self):
+    def test_add_class_fails_on_conflicting_schedule_1(self):
         c = fast_course()
 
-        self.assertTrue(c.add_day('L', '0700-0759', 'room'))
-        self.assertFalse(c.add_day('L', '0730-0830', 'room'))
+        self.assertTrue(c.add_class('L', '0700-0759', 'room'))
+        self.assertFalse(c.add_class('L', '0730-0830', 'room'))
 
         self.assertEqual(len(c.schedule), 1)
         self.assertEqual(len(c.schedule['L']), 1)
@@ -171,11 +171,11 @@ class CourseDataAddDayTester(unittest.TestCase):
             [fast_schedule('0700-0759', 'room')]
         )
 
-    def test_add_day_fails_on_conflicting_schedule_2(self):
+    def test_add_class_fails_on_conflicting_schedule_2(self):
         c = fast_course()
 
-        self.assertTrue(c.add_day('L', '0700-0959', 'room'))
-        self.assertFalse(c.add_day('L', '0800-0859', 'room'))
+        self.assertTrue(c.add_class('L', '0700-0959', 'room'))
+        self.assertFalse(c.add_class('L', '0800-0859', 'room'))
 
         self.assertEqual(len(c.schedule), 1)
         self.assertEqual(len(c.schedule['L']), 1)
@@ -184,11 +184,11 @@ class CourseDataAddDayTester(unittest.TestCase):
             [fast_schedule('0700-0959', 'room')]
         )
 
-    def test_add_day_fails_on_conflicting_schedule_3(self):
+    def test_add_class_fails_on_conflicting_schedule_3(self):
         c = fast_course()
 
-        self.assertTrue(c.add_day('L', '0800-0859', 'room'))
-        self.assertFalse(c.add_day('L', '0730-0930', 'room'))
+        self.assertTrue(c.add_class('L', '0800-0859', 'room'))
+        self.assertFalse(c.add_class('L', '0730-0930', 'room'))
 
         self.assertEqual(len(c.schedule), 1)
         self.assertEqual(len(c.schedule['L']), 1)
@@ -207,28 +207,28 @@ class CourseTimeavailabilityTester(unittest.TestCase):
 
     def test_time_avaliale_on_available_time_1(self):
         c = fast_course()
-        c.add_day('L', '0700-0759', '...')
+        c.add_class('L', '0700-0759', '...')
 
         t = fast_schedule('0800-0859', '...')
         self.assertTrue(c.time_available('L', [t]))
 
     def test_time_avaliale_on_available_time_2(self):
         c = fast_course()
-        c.add_day('L', '1100-1359', '...')
+        c.add_class('L', '1100-1359', '...')
 
         t = fast_schedule('0700-1129', '...')
         self.assertFalse(c.time_available('L', [t]))
 
     def test_time_not_available(self):
         c = fast_course()
-        c.add_day('L', '0700-0759', '...')
+        c.add_class('L', '0700-0759', '...')
 
         t = fast_schedule('0730-0829', '...')
         self.assertFalse(c.time_available('L', [t]))
 
     def test_time_available_with_longer_list(self):
         c = fast_course()
-        c.add_day('M', '1100-1359', '...')
+        c.add_class('M', '1100-1359', '...')
 
         t = [
             fast_schedule('0730-0829', '...'),
@@ -238,7 +238,7 @@ class CourseTimeavailabilityTester(unittest.TestCase):
 
     def test_time_not_available_with_longer_list(self):
         c = fast_course()
-        c.add_day('M', '1100-1359', '...')
+        c.add_class('M', '1100-1359', '...')
 
         t = [
             fast_schedule('0730-1129', '...'),
