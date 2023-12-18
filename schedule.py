@@ -57,7 +57,7 @@ class CourseSchedule:
     It's basically a named tuple, but with time format conversion.
     """
 
-    def __init__(self, time: str, room: str, nrc: int):
+    def __init__(self, time: str, room: str, nrc: str):
         self.time = self.parse_time(time)
         self.room = room
         self.nrc = nrc
@@ -118,7 +118,7 @@ class Course:
     A Course's data.
     """
 
-    def __init__(self, nrc: int, key: str, name: str, sec: str, prof: str):
+    def __init__(self, nrc: str, key: str, name: str, sec: str, prof: str):
         self.nrc = nrc
         self.name = name
         self.key = key
@@ -188,7 +188,7 @@ class Course:
         s = f'{self.nrc}, {self.name}, {self.professor}\n'
         return s + '\n'.join(f'{key}: {self.schedule[key]}' for key in self.schedule.keys())
 
-def parse_file(filename: str) -> dict[int, Course]:
+def parse_file(filename: str) -> dict[str, Course]:
     """
     Parses .xlsx file and returns a dictionary [nrc -> Course].
     This file has to have the same format as classes/p2024.xlsx.
@@ -202,16 +202,17 @@ def parse_file(filename: str) -> dict[int, Course]:
     for r in range(1, sheet.nrows):
         row = [sheet.cell_value(r, c) for c in range(sheet.ncols)]
         nrc, key, name, sec, day, time, prof, room, _ = row
+        nrc = str(int(nrc))
 
         if courses_by_nrc.get(nrc, None) is None:
-            courses_by_nrc[nrc] = Course(int(nrc), key, name, sec, prof)
+            courses_by_nrc[nrc] = Course(nrc, key, name, sec, prof)
 
         courses_by_nrc[nrc].add_day(day, time, room)
 
     return courses_by_nrc
 
 def collect_courses(
-        courses_by_nrc: dict[int, Course],
+        courses_by_nrc: dict[str, Course],
         names: list[str],
         professor_blacklist: list[str] = [],
         course_blacklist: list[int] = [],
@@ -227,7 +228,7 @@ def collect_courses(
 
     professor_blacklist = set(professor_blacklist)
     # TODO: Make nrcs strings
-    course_blacklist = set(map(int, course_blacklist))
+    course_blacklist = set(course_blacklist)
 
     courses = {name : [] for name in names}
     time_restrictions = {
@@ -303,14 +304,14 @@ class SchedulePrototype:
 
         return self
 
-    def get_professors(self, courses_by_nrc: dict[int, Course]) -> set[str]:
+    def get_professors(self, courses_by_nrc: dict[str, Course]) -> set[str]:
         """
         Returns a list with all professors in this schedule.
         """
 
         return set(courses_by_nrc[nrc].professor for nrc in self.nrcs)
 
-    def table(self, courses_by_nrc: dict[int, Course]) -> str:
+    def table(self, courses_by_nrc: dict[str, Course]) -> str:
         """
         Returns a string that represents a table containing relevant
         data for the schedule. Output looks like this:
@@ -351,7 +352,7 @@ class SchedulePrototype:
 
         return tabulate.tabulate(rows, headers=headers)
 
-    def show(self, course_by_nrc: dict[int, Course]):
+    def show(self, courses_by_nrc: dict[str, Course]):
         """
         Prints course nrc, names and professor as well as the table.
         Output looks like this:
@@ -388,7 +389,7 @@ class SchedulePrototype:
             data.append([nrc, f'[{course.initials()}]', f'{course.name}', course.professor])
 
         print(tabulate.tabulate(data, tablefmt='plain') + '\n')
-        print(self.table(course_by_nrc))
+        print(self.table(courses_by_nrc))
         print('\n\n\n')
 
 # TODO: Parameter type hints
@@ -460,7 +461,7 @@ if __name__ == '__main__':
         for i, prot in enumerate(combinations):
             b = False
             for course in config[CONFIG_KEYS[ConfigKey.COURSE_WHITELIST]]:
-                if int(course) not in prot.nrcs: # TODO: Make nrcs strings!
+                if course not in prot.nrcs: # TODO: Make nrcs strings!
                     rem.append(i)
                     b = True
                     break
