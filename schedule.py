@@ -62,8 +62,11 @@ class CourseSchedule:
         self.room = room
         self.nrc = nrc
 
-    # TODO: Docstring this
     def parse_time(self, time: str) -> tuple[int, int]:
+        """
+        Returns a tuple of ints, from a string time in the "hhmm-hhmm" format.
+        """
+
         assert len(time) == 9 and time[4] == '-'
         val = tuple(map(int, time.split('-')))
         assert val[0] < val[1]
@@ -227,7 +230,6 @@ def collect_courses(
     """
 
     professor_blacklist = set(professor_blacklist)
-    # TODO: Make nrcs strings
     course_blacklist = set(course_blacklist)
 
     courses = {name : [] for name in names}
@@ -461,7 +463,7 @@ if __name__ == '__main__':
         for i, prot in enumerate(combinations):
             b = False
             for course in config[CONFIG_KEYS[ConfigKey.COURSE_WHITELIST]]:
-                if course not in prot.nrcs: # TODO: Make nrcs strings!
+                if course not in prot.nrcs:
                     rem.append(i)
                     b = True
                     break
