@@ -394,10 +394,14 @@ class SchedulePrototype:
         print(self.table(courses_by_nrc))
         print('\n\n\n')
 
-# TODO: Parameter type hints
-def combine_r(prot, possibilities, combinations):
+def combine_r(
+        prot: SchedulePrototype,
+        possibilities: list[list[Course]],
+        combinations: list[SchedulePrototype]
+    ):
     """
     Recursive method. Gets all possible schedule combinations given `possibilities`.
+    Stores them in `combinations`.
     """
 
     if len(possibilities) == 0:
@@ -453,7 +457,6 @@ if __name__ == '__main__':
         exit(1)
 
     c = list(courses_by_name.values())
-
     combinations = []
     combine_r(SchedulePrototype(), c, combinations)
 
