@@ -93,8 +93,7 @@ class CourseData:
 
         return int(f'{self.time[0]}{self.time[1]}')
 
-    # TODO: I don't like your name
-    def pretty_print(self) -> str:
+    def pretty_format(self) -> str:
         """
         Returns a string with this time block's range, but with a nicer format.
         'hh:mm - hh:mm'
@@ -342,7 +341,7 @@ class SchedulePrototype:
 
         rows = []
         for r in ranges:
-            row = [r.pretty_print()] + [None] * 5
+            row = [r.pretty_format()] + [None] * 5
             for i, day in enumerate(keys):
                 for t in self.schedule[day]:
                     if r.time_collision(t):
