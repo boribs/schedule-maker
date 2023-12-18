@@ -455,22 +455,29 @@ if __name__ == '__main__':
     combine_r(SchedulePrototype(), c, combinations)
 
     # filter out non white-listed courses and professors
-    rem = []
-    for i, prot in enumerate(combinations):
-        b = False
-        for course in config[CONFIG_KEYS[ConfigKey.COURSE_WHITELIST]]:
-            if int(course) not in prot.nrcs: # TODO: Make nrcs strings!
-                rem.append(i)
-                b = True
-                break
+    try:
+        rem = []
+        for i, prot in enumerate(combinations):
+            b = False
+            for course in config[CONFIG_KEYS[ConfigKey.COURSE_WHITELIST]]:
+                if int(course) not in prot.nrcs: # TODO: Make nrcs strings!
+                    rem.append(i)
+                    b = True
+                    break
 
-        if b: continue
+            if b: continue
 
-        professors = prot.get_professors(courses_by_nrc)
-        for prof in config[CONFIG_KEYS[ConfigKey.PROFESSOR_WHITELIST]]:
-            if prof not in professors:
-                rem.append(i)
-                break
+            professors = prot.get_professors(courses_by_nrc)
+            for prof in config[CONFIG_KEYS[ConfigKey.PROFESSOR_WHITELIST]]:
+                if prof not in professors:
+                    rem.append(i)
+                    break
+    except KeyError as e:
+        print(
+            f'Key "{e.args[0]}" not found. Make sure to update `{config_file}`.',
+            file=sys.stderr
+        )
+        exit(1)
 
     for i in reversed(rem):
         combinations.pop(i)
