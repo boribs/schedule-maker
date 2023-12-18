@@ -50,8 +50,7 @@ CONFIG_BODY = {
     }
 }
 
-# TODO: I don't like your name
-class CourseSchedule:
+class CourseData:
     """
     This class stores individual course's class time and classroom.
     It's basically a named tuple, but with time format conversion.
@@ -73,7 +72,7 @@ class CourseSchedule:
 
         return val
 
-    def time_collision(self, other: CourseSchedule) -> bool:
+    def time_collision(self, other: CourseData) -> bool:
         """
         Returns True only if this object's time collides with `schedule`'s time.
         """
@@ -142,7 +141,7 @@ class Course:
 
         assert day in VALID_DAYS
 
-        cs = CourseSchedule(time, room, self.nrc) # schedule we're trying to add
+        cs = CourseData(time, room, self.nrc) # schedule we're trying to add
 
         # empty day, no problem
         if self.schedule.get(day, None) is None:
@@ -159,7 +158,7 @@ class Course:
 
         return True
 
-    def time_available(self, day: str, schedule: list[CourseSchedule]) -> bool:
+    def time_available(self, day: str, schedule: list[CourseData]) -> bool:
         """
         Checks if this course's time blocks fit with `schedule` on `day`.
         """
@@ -234,7 +233,7 @@ def collect_courses(
 
     courses = {name : [] for name in names}
     time_restrictions = {
-        key : [CourseSchedule(s, '...', 0) for s in time_restrictions[key]]
+        key : [CourseData(s, '...', 0) for s in time_restrictions[key]]
         for key in time_restrictions.keys()
     }
 
@@ -339,7 +338,7 @@ class SchedulePrototype:
 
         keys = [day for day in VALID_DAYS if day in self.schedule.keys()]
         headers = ['Horario'] + [DAY_DICT[day] for day in keys]
-        ranges = [CourseSchedule(f'{i:>02}00-{i:>02}59', None, None) for i in range(7, 21)]
+        ranges = [CourseData(f'{i:>02}00-{i:>02}59', None, None) for i in range(7, 21)]
 
         rows = []
         for r in ranges:

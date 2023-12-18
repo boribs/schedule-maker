@@ -5,7 +5,7 @@ def fast_course():
     return schedule.Course('12345', '000', 'Some course', '000', 'Some professor')
 
 def fast_schedule(time, room='room'):
-    return schedule.CourseSchedule(time, room, 0)
+    return schedule.CourseData(time, room, 0)
 
 class RangeCollisionTester(unittest.TestCase):
     """
@@ -55,7 +55,7 @@ class RangeCollisionTester(unittest.TestCase):
         self.assertTrue(a.time_collision(b))
         self.assertTrue(b.time_collision(a))
 
-class CourseScheduleTimeKeyTester(unittest.TestCase):
+class CourseDataTimeKeyTester(unittest.TestCase):
     def test_time_key_1(self):
         self.assertEqual(
             fast_schedule('0700-0859').time_key(),
@@ -74,7 +74,7 @@ class CourseScheduleTimeKeyTester(unittest.TestCase):
             12001359
         )
 
-class CourseScheduleAddDayTester(unittest.TestCase):
+class CourseDataAddDayTester(unittest.TestCase):
     """
     Tests for the Courses.add_day method.
     """
