@@ -60,7 +60,15 @@ crea una plantilla con el siguiente contenido:
         "Profesor 1",
         "Profesor 2"
     ],
+    "con-profesores": [
+        "Profesor 1",
+        "Profesor 2"
+    ],
     "sin-cursos" : [
+        "nrc1",
+        "nrc2"
+    ],
+    "con-cursos" : [
         "nrc1",
         "nrc2"
     ],
@@ -94,7 +102,11 @@ en el documento.
 
 En `sin-profesores` se anotan los profesores no deseados.
 
+En `con-profesores` se anotan los profesores deseados. Solo se mostrarán horarios con clases de todos los profesores especificados.
+
 En `sin-cursos` se anotan los NRCs de los cursos no deseados. Esto también puede ser usado para anotar los cursos llenos durante el registro de materias.
+
+En `con-cursos` se anotan los cursos deseados. Solo se mostrarán horarios que contengan todos los cursos anotados.
 
 En `sin-horarios` se antonan los horarios no deseados. El formato de las horas
 debe ser el mismo que usa BUAP: "hhmm-hhmm".
@@ -110,6 +122,6 @@ python schedule.py data.xlsx -c config.json
 ## Roadmap
 
  ✔ Configuración externa. \
- ☐ Mostrar combinaciones con `NRC`s especificos. \
+ ✔ Especificar `NRC`s de forma inclusiva y exclusiva. \
  ☐ Dar soporte a `PDF`s. \
  ☐ Dar soporte a otras facultades.
